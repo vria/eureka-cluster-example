@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: gateway-service
+server:
+  port: 9011
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:9000/eureka}
+  instance:
+    preferIpAddress: true

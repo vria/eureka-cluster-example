@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: feed-service
+server:
+  port: 9010
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://localhost:9000/eureka}
+  instance:
+    preferIpAddress: true
