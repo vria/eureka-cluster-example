@@ -41,11 +41,12 @@ services:
       timeout: 5s
       retries: 5
 
-  eureka-feed-service:
+  eureka-feed-service1:
     build:
       context: ./feed
-    container_name: eureka-feed-service
+    container_name: eureka-feed-service1
     environment:
+      - PORT=9010
       - EUREKA_URL=http://eureka-server1:9001/eureka
     depends_on:
       eureka-server1:
@@ -54,6 +55,23 @@ services:
         condition: service_healthy
     ports:
       - "9010:9010"
+    networks:
+      - network-eureka
+
+  eureka-feed-service2:
+    build:
+      context: ./feed
+    container_name: eureka-feed-service2
+    environment:
+      - PORT=9011
+      - EUREKA_URL=http://eureka-server1:9001/eureka
+    depends_on:
+      eureka-server1:
+        condition: service_healthy
+      eureka-server2:
+        condition: service_healthy
+    ports:
+      - "9011:9011"
     networks:
       - network-eureka
 
@@ -69,7 +87,7 @@ services:
       eureka-server2:
         condition: service_healthy
     ports:
-      - "9011:9011"
+      - "9020:9020"
     networks:
       - network-eureka
 

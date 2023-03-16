@@ -2,7 +2,7 @@ spring:
   application:
     name: feed-service
 server:
-  port: 9010
+  port: ${PORT:9010}
 eureka:
   client:
     serviceUrl:

@@ -25,6 +25,5 @@ public class GatewayController {
         FeedResponse getFeed();
     }
 
-    record FeedResponse(String info) {
-    }
+    record FeedResponse(String info, String port) { }
 }
