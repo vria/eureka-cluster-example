@@ -1,0 +1,77 @@
+version: "3.4"
+
+services:
+
+  eureka-server1:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server1
+    environment:
+      - EUREKA_URL=http://eureka-server2:9002/eureka
+      - PORT=9001
+      - HOSTNAME=eureka-server1
+    ports:
+      - "9001:9001"
+    networks:
+      - network-eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:9001/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  eureka-server2:
+    build:
+      context: ./eureka-server
+    container_name: eureka-server2
+    environment:
+      - EUREKA_URL=http://eureka-server1:9001/eureka
+      - PORT=9002
+      - HOSTNAME=eureka-server2
+    depends_on:
+      eureka-server1:
+        condition: service_healthy
+    ports:
+      - "9002:9002"
+    networks:
+      - network-eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:9002/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  eureka-feed-service:
+    build:
+      context: ./feed
+    container_name: eureka-feed-service
+    environment:
+      - EUREKA_URL=http://eureka-server1:9001/eureka
+    depends_on:
+      eureka-server1:
+        condition: service_healthy
+      eureka-server2:
+        condition: service_healthy
+    ports:
+      - "9010:9010"
+    networks:
+      - network-eureka
+
+  eureka-gateway-service:
+    build:
+      context: ./gateway
+    container_name: eureka-gateway-service
+    environment:
+      - EUREKA_URL=http://eureka-server2:9002/eureka
+    depends_on:
+      eureka-server1:
+        condition: service_healthy
+      eureka-server2:
+        condition: service_healthy
+    ports:
+      - "9011:9011"
+    networks:
+      - network-eureka
+
+networks:
+  network-eureka:
