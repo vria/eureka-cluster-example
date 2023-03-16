@@ -25,7 +25,8 @@
 	<modules>
 		<module>feed</module>
 		<module>eureka-server</module>
-	</modules>
+        <module>gateway</module>
+    </modules>
 
 	<build>
 		<plugins>
